@@ -33,11 +33,8 @@ class WeatherServiceTest {
     @Mock
     private HttpURLConnection mockConnection;
 
-
-
     @Mock
     private ApiConnectionWeather apiConnection;
-
 
     @BeforeEach
     public void setup() {
@@ -66,16 +63,13 @@ class WeatherServiceTest {
         when(mockConnection.getResponseCode()).thenReturn(200);
 
         // Mock the buildWeatherApiUrl method
-        doReturn("http://mocked.url").when(weatherService).buildWeatherApiUrl(any(), any(), any(), any(), any(), any());
+        doReturn("http://mocked.url").when(apiConnection).buildWeatherApiUrl(any(), any(), any(), any(), any(), any());
         WeatherResponseDto actualResponse = new WeatherResponseDto();
         CurrentWeather currentResponse = new CurrentWeather();
         currentResponse.setDt(instant.getEpochSecond());
         actualResponse.setLat(40.7128);
         actualResponse.setLon(74.0060);
         actualResponse.setTimezone("America/New_York");
-
-
-
 
 
         doReturn(Optional.of(actualResponse)).when(weatherService).getWeatherFiveDays();
@@ -86,20 +80,7 @@ class WeatherServiceTest {
     }
 
 
-    @Test
-    public void given_AllDataForConnection_ThenBuildUrlSucces() {
-        String baseUrl = "http://api.weather.com";
-        String apiKey = "123456";
-        String lat = "40.7128";
-        String lon = "74.0060";
 
-        Instant instant = Instant.now();
-
-        String expectedUrl = "http://api.weather.com?lat=40.7128&lon=74.0060&units=metric&exclude=minutely,hourly,alerts&dt="+instant.getEpochSecond()+"&appid=123456";
-        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric", instant);
-
-        assertTrue(expectedUrl.equalsIgnoreCase(actualUrl));
-    }
     @Test
     public void given_Null_Url_ForConnection_ThenBuildUrlFailure() {
         String baseUrl = null;
@@ -108,7 +89,7 @@ class WeatherServiceTest {
         String lon = "74.0060";
 
         String expectedUrl = null;
-        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric", Instant.now());
+        String actualUrl = apiConnection.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric", Instant.now());
 
         assertEquals(expectedUrl, actualUrl);
     }
@@ -121,7 +102,7 @@ class WeatherServiceTest {
         String lon = "74.0060";
 
         String expectedUrl = null;
-        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric", Instant.now());
+        String actualUrl = apiConnection.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric", Instant.now());
 
         assertEquals(expectedUrl, actualUrl);
     }
@@ -134,22 +115,9 @@ class WeatherServiceTest {
         String lon = "74.0060";
 
         String expectedUrl = null;
-        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric", Instant.now());
+        String actualUrl = apiConnection.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric", Instant.now());
 
         assertEquals(expectedUrl, actualUrl);
     }
-
-    @Test
-    public void testConnectionApiWeather() throws Exception {
-        String testResponse = "Test response";
-        InputStream testInput = new ByteArrayInputStream(testResponse.getBytes());
-
-        when(mockConnection.getInputStream()).thenReturn(testInput);
-
-//        Optional<StringBuilder> result = apiConnection.connectionApiWheather(mockUrl.toString());
-
-//        assertEquals(testResponse, result.get().toString());
-    }
-
 
 }

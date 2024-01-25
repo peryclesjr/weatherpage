@@ -7,7 +7,6 @@ import com.weather.challenge.weather.weather.utils.ApiConnectionWeather;
 import com.weather.challenge.weather.weather.utils.WeatherResponseConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 
 import java.io.IOException;
@@ -46,39 +45,13 @@ public class WeatherService {
     }
 
 
-    //builds the url with the information we need
-    public String buildWeatherApiUrl(String url,
-                                            String apiKey,
-                                            String lat,
-                                            String lon,
-                                            String units,
-                                     Instant instant) {
-
-        if (isNullOrEmpty(url) || isNullOrEmpty(apiKey) || isNullOrEmpty(lat) || isNullOrEmpty(lon) || isNullOrEmpty(units)) {
-            return null;
-        }
-
-        return UriComponentsBuilder
-                .fromUriString(url)
-                .queryParam("lat", lat)
-                .queryParam("lon", lon)
-                .queryParam("units", units)
-                .queryParam("exclude", "minutely,hourly,alerts")
-                .queryParam("dt", instant.getEpochSecond())
-                .queryParam("appid", apiKey)
-                .toUriString();
-    }
-
-    public static boolean isNullOrEmpty(String str) {
-        return str == null || str.isEmpty();
-    }
 
     public Optional<WeatherResponseDto> getWeatherFiveDays()  {
         ApiConnectionWeather apiConnection = new ApiConnectionWeather();
         StringBuilder responseContent = new StringBuilder();
 
         try {
-            String urlString = buildWeatherApiUrl(urlForecastFiveDays, apiKey, latitude, longitude,"metric", Instant.now());
+            String urlString = apiConnection.buildWeatherApiUrl(urlForecastFiveDays, apiKey, latitude, longitude,"metric", Instant.now());
             Optional<StringBuilder> response = apiConnection.connectionApiWheather(urlString);
             if (response.isPresent()) {
                 responseContent = response.get();

@@ -1,6 +1,7 @@
 package com.weather.challenge.weather.weather.utils;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -42,5 +44,31 @@ public class ApiConnectionWeather {
 
         }
         return Optional.empty();
+    }
+
+    public String buildWeatherApiUrl(String url,
+                                     String apiKey,
+                                     String lat,
+                                     String lon,
+                                     String units,
+                                     Instant instant) {
+
+        if (isNullOrEmpty(url) || isNullOrEmpty(apiKey) || isNullOrEmpty(lat) || isNullOrEmpty(lon) || isNullOrEmpty(units)) {
+            return null;
+        }
+
+        return UriComponentsBuilder
+                .fromUriString(url)
+                .queryParam("lat", lat)
+                .queryParam("lon", lon)
+                .queryParam("units", units)
+                .queryParam("exclude", "minutely,hourly,alerts")
+                .queryParam("dt", instant.getEpochSecond())
+                .queryParam("appid", apiKey)
+                .toUriString();
+    }
+
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
     }
 }
