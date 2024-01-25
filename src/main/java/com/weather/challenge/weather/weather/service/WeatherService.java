@@ -2,6 +2,8 @@ package com.weather.challenge.weather.weather.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weather.challenge.weather.weather.model.WeatherResponse;
+import com.weather.challenge.weather.weather.model.WeatherResponseDto;
+import com.weather.challenge.weather.weather.utils.WeatherResponseConverter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,11 +41,11 @@ public class WeatherService {
 
 
 
-    public String getWeatherData() {
+    public WeatherResponseDto getWeatherData() {
         StringBuilder responseContent = new StringBuilder();
 
         //fill our Url with the information we need
-        String urlString = buildWeatherApiUrl(urlBase, apiKey, latitude, longitude);
+        String urlString = buildWeatherApiUrl(urlBase, apiKey, latitude, longitude, "metric");
         String line;
 
         HttpURLConnection connection = null;
@@ -60,21 +62,19 @@ public class WeatherService {
             }
 
 
-            return toWeatherResponse(responseContent.toString()).toString();
+            return WeatherResponseConverter.toDto(toWeatherResponse(responseContent.toString()));
 
         }catch (IOException e) {
             e.printStackTrace();
-            return "Error";
         }
         catch (Exception e) {
             e.printStackTrace();
-            return "Error";
         }
         finally {
             connection.disconnect();
+
         }
-
-
+        return null;
     }
 
 
@@ -88,9 +88,10 @@ public class WeatherService {
     public String buildWeatherApiUrl(String baseUrl,
                                             String apiKey,
                                             String lat,
-                                            String lon) {
+                                            String lon,
+                                            String units) {
 
-        if (isNullOrEmpty(baseUrl) || isNullOrEmpty(apiKey) || isNullOrEmpty(lat) || isNullOrEmpty(lon)) {
+        if (isNullOrEmpty(baseUrl) || isNullOrEmpty(apiKey) || isNullOrEmpty(lat) || isNullOrEmpty(lon) || isNullOrEmpty(units)) {
             return null;
         }
 
@@ -99,7 +100,7 @@ public class WeatherService {
                 .queryParam("lat", lat)
                 .queryParam("lon", lon)
                 .queryParam("appid", apiKey)
-                .queryParam("units", "metric")
+                .queryParam("units", units)
                 .queryParam("dt", Instant.now().getEpochSecond())
                 .toUriString();
     }

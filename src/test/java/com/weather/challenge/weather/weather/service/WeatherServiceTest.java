@@ -1,5 +1,7 @@
 package com.weather.challenge.weather.weather.service;
 
+import com.weather.challenge.weather.weather.model.WeatherResponseDto;
+import com.weather.challenge.weather.weather.model.details.CurrentWeather;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,19 +38,42 @@ class WeatherServiceTest {
 
     @Test
     public void testGetWeatherData() throws IOException {
-        String expectedResponse = "Expected response";
-        InputStream inputStream = new ByteArrayInputStream(expectedResponse.getBytes());
+        WeatherResponseDto expected = new WeatherResponseDto();
+
+        Instant instant = Instant.now();
+        CurrentWeather current = new CurrentWeather();
+        current.setDt(instant.getEpochSecond());
+
+
+        expected.setLat(40.7128);
+        expected.setLon(74.0060);
+        expected.setTimezone("America/New_York");
+        expected.setCurrent(current);
+
+
+
+        InputStream inputStream = new ByteArrayInputStream(expected.toString().getBytes());
 
         when(mockConnection.getInputStream()).thenReturn(inputStream);
         when(mockConnection.getResponseCode()).thenReturn(200);
 
         // Mock the buildWeatherApiUrl method
-        doReturn("http://mocked.url").when(weatherService).buildWeatherApiUrl(any(), any(), any(), any());
-        doReturn("Expected response").when(weatherService).getWeatherData();
+        doReturn("http://mocked.url").when(weatherService).buildWeatherApiUrl(any(), any(), any(), any(), any());
+        WeatherResponseDto actualResponse = new WeatherResponseDto();
+        CurrentWeather currentResponse = new CurrentWeather();
+        currentResponse.setDt(instant.getEpochSecond());
+        actualResponse.setLat(40.7128);
+        actualResponse.setLon(74.0060);
+        actualResponse.setTimezone("America/New_York");
+        actualResponse.setCurrent(currentResponse);
 
-        String actualResponse = weatherService.getWeatherData();
 
-        assertEquals(expectedResponse, actualResponse);
+
+        doReturn(actualResponse).when(weatherService).getWeatherData();
+
+        WeatherResponseDto weatherResponse = weatherService.getWeatherData();
+
+        assertEquals(expected, weatherResponse);
     }
 
 
@@ -59,7 +85,7 @@ class WeatherServiceTest {
         String lon = "74.0060";
 
         String expectedUrl = "http://api.weather.com?lat=40.7128&lon=74.0060&appid=123456";
-        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon);
+        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric");
 
         assertEquals(expectedUrl, actualUrl);
     }
@@ -71,7 +97,7 @@ class WeatherServiceTest {
         String lon = "74.0060";
 
         String expectedUrl = null;
-        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon);
+        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric");
 
         assertEquals(expectedUrl, actualUrl);
     }
@@ -84,7 +110,7 @@ class WeatherServiceTest {
         String lon = "74.0060";
 
         String expectedUrl = null;
-        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon);
+        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric");
 
         assertEquals(expectedUrl, actualUrl);
     }
@@ -97,7 +123,7 @@ class WeatherServiceTest {
         String lon = "74.0060";
 
         String expectedUrl = null;
-        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon);
+        String actualUrl = weatherService.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric");
 
         assertEquals(expectedUrl, actualUrl);
     }
