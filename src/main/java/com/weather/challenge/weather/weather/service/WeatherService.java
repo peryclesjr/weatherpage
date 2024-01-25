@@ -2,6 +2,7 @@ package com.weather.challenge.weather.weather.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weather.challenge.weather.weather.model.WeatherResponse;
+import com.weather.challenge.weather.weather.model.details.DailyWeather;
 import com.weather.challenge.weather.weather.model.dto.WeatherResponseDto;
 import com.weather.challenge.weather.weather.utils.ApiConnectionWeather;
 import com.weather.challenge.weather.weather.utils.WeatherResponseConverter;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -40,9 +43,7 @@ public class WeatherService {
 
 
     //converts the json to a WeatherResponse object
-    public WeatherResponse toWeatherResponse(String json) throws IOException {
-        return objectMapper.readValue(json, WeatherResponse.class);
-    }
+
 
 
 
@@ -55,7 +56,9 @@ public class WeatherService {
             Optional<StringBuilder> response = apiConnection.connectionApiWheather(urlString);
             if (response.isPresent()) {
                 responseContent = response.get();
-                return Optional.of(WeatherResponseConverter.toDto(toWeatherResponse(responseContent.toString())));
+                WeatherResponse weatherResponse = toWeatherResponse(responseContent.toString());
+                weatherResponse.setDaily(onlyFiveDays(weatherResponse.getDaily()));
+                return Optional.of(WeatherResponseConverter.toDto(weatherResponse));
             }
         }catch(IOException io){
             io.printStackTrace();
@@ -64,9 +67,20 @@ public class WeatherService {
         }
         return Optional.empty();
 
-
     }
 
+    private WeatherResponse toWeatherResponse(String json) throws IOException {
+        return objectMapper.readValue(json, WeatherResponse.class);
+    }
 
+    //Api returns 8 days, but we only need 5, today we remove the 0 day and the last  two days after
+    //it's simple to change the number of days, just change the parameters of the subList method
+    private List<DailyWeather> onlyFiveDays(List<DailyWeather> dailyWeatherList) {
+        if (dailyWeatherList.size() < 6) {
+            return dailyWeatherList;
+        }
+        dailyWeatherList.sort(Comparator.comparingLong(DailyWeather::getDt));
 
+        return dailyWeatherList.subList(1, 6);
+    }
 }
