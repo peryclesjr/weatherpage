@@ -1,6 +1,7 @@
 package com.weather.challenge.weather.weather.model.details;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Data
 @RequiredArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DailyWeather {
     private long dt;
     private long sunrise;

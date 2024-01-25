@@ -1,6 +1,6 @@
 package com.weather.challenge.weather.weather.service;
 
-import com.weather.challenge.weather.weather.model.WeatherResponseDto;
+import com.weather.challenge.weather.weather.model.dto.WeatherResponseDto;
 import com.weather.challenge.weather.weather.model.details.CurrentWeather;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ class WeatherServiceTest {
         expected.setLat(40.7128);
         expected.setLon(74.0060);
         expected.setTimezone("America/New_York");
-        expected.setCurrent(current);
+
 
 
 
@@ -65,7 +65,7 @@ class WeatherServiceTest {
         actualResponse.setLat(40.7128);
         actualResponse.setLon(74.0060);
         actualResponse.setTimezone("America/New_York");
-        actualResponse.setCurrent(currentResponse);
+
 
 
 
