@@ -3,18 +3,16 @@ package com.weather.challenge.weather.weather.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weather.challenge.weather.weather.model.WeatherResponse;
 import com.weather.challenge.weather.weather.model.dto.WeatherResponseDto;
+import com.weather.challenge.weather.weather.utils.ApiConnectionWeather;
 import com.weather.challenge.weather.weather.utils.WeatherResponseConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Optional;
 
 
 @Service
@@ -41,42 +39,6 @@ public class WeatherService {
     private String urlForecastFiveDays;
 
 
-    public WeatherResponseDto getWeatherData() {
-        StringBuilder responseContent = new StringBuilder();
-
-        //fill our Url with the information we need
-        String urlString = buildWeatherApiUrl(urlBase, apiKey, latitude, longitude, "metric");
-        String line;
-
-        HttpURLConnection connection = null;
-
-        try  {
-            URL url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream(),
-                            StandardCharsets.UTF_8));
-            while ((line = reader.readLine()) != null) {
-                responseContent.append(line);
-            }
-
-
-            return WeatherResponseConverter.toDto(toWeatherResponse(responseContent.toString()));
-
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            connection.disconnect();
-
-        }
-        return null;
-    }
-
 
     //converts the json to a WeatherResponse object
     public WeatherResponse toWeatherResponse(String json) throws IOException {
@@ -89,7 +51,8 @@ public class WeatherService {
                                             String apiKey,
                                             String lat,
                                             String lon,
-                                            String units) {
+                                            String units,
+                                     Instant instant) {
 
         if (isNullOrEmpty(url) || isNullOrEmpty(apiKey) || isNullOrEmpty(lat) || isNullOrEmpty(lon) || isNullOrEmpty(units)) {
             return null;
@@ -101,7 +64,7 @@ public class WeatherService {
                 .queryParam("lon", lon)
                 .queryParam("units", units)
                 .queryParam("exclude", "minutely,hourly,alerts")
-                .queryParam("dt", Instant.now().getEpochSecond())
+                .queryParam("dt", instant.getEpochSecond())
                 .queryParam("appid", apiKey)
                 .toUriString();
     }
@@ -110,39 +73,27 @@ public class WeatherService {
         return str == null || str.isEmpty();
     }
 
-    public WeatherResponseDto getWeatherFiveDays() {
+    public Optional<WeatherResponseDto> getWeatherFiveDays()  {
+        ApiConnectionWeather apiConnection = new ApiConnectionWeather();
         StringBuilder responseContent = new StringBuilder();
 
-        //fill our Url with the information we need
-        String urlString = buildWeatherApiUrl(urlForecastFiveDays, apiKey, latitude, longitude, "metric");
-        String line;
-
-        HttpURLConnection connection = null;
-
-        try  {
-            URL url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream(),
-                            StandardCharsets.UTF_8));
-            while ((line = reader.readLine()) != null) {
-                responseContent.append(line);
+        try {
+            String urlString = buildWeatherApiUrl(urlForecastFiveDays, apiKey, latitude, longitude,"metric", Instant.now());
+            Optional<StringBuilder> response = apiConnection.connectionApiWheather(urlString);
+            if (response.isPresent()) {
+                responseContent = response.get();
+                return Optional.of(WeatherResponseConverter.toDto(toWeatherResponse(responseContent.toString())));
             }
-
-            return WeatherResponseConverter.toDto(toWeatherResponse(responseContent.toString()));
-
-        }catch (IOException e) {
+        }catch(IOException io){
+            io.printStackTrace();
+        }catch(Exception e){
             e.printStackTrace();
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            connection.disconnect();
+        return Optional.empty();
 
-        }
-        return null;
+
     }
+
+
 
 }

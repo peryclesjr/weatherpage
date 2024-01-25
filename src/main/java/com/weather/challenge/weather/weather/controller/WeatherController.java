@@ -5,6 +5,8 @@ import com.weather.challenge.weather.weather.service.WeatherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/weather")
 public class WeatherController {
@@ -17,12 +19,11 @@ public class WeatherController {
 
     @GetMapping("/forecast5days")
     public ResponseEntity<WeatherResponseDto> getFiveDayForecast() {
-        return ResponseEntity.ok(weatherService.getWeatherFiveDays());
-
+        Optional<WeatherResponseDto> optional = weatherService.getWeatherFiveDays();
+        if (    optional.isPresent()) {
+            return ResponseEntity.ok(optional.get());
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/current")
-    public ResponseEntity<WeatherResponseDto> getCurrentWeather() {
-        return ResponseEntity.ok(weatherService.getWeatherData());
-    }
 }
