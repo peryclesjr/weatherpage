@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 
 
 @Service
@@ -59,7 +60,6 @@ public class WeatherService {
             }
 
 
-            System.out.println("Response code: " + responseContent.toString());
             return toWeatherResponse(responseContent.toString()).toString();
 
         }catch (IOException e) {
@@ -99,6 +99,8 @@ public class WeatherService {
                 .queryParam("lat", lat)
                 .queryParam("lon", lon)
                 .queryParam("appid", apiKey)
+                .queryParam("units", "metric")
+                .queryParam("dt", Instant.now().getEpochSecond())
                 .toUriString();
     }
 

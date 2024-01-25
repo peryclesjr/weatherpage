@@ -3,6 +3,7 @@ package com.weather.challenge.weather.weather.controller;
 import com.weather.challenge.weather.weather.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +17,8 @@ public class WeatherController {
     WeatherService weatherService;
 
     @GetMapping("/current")
-    public String getCurrentWeather() {
-        return weatherService.getWeatherData().toString();
+    public ResponseEntity<String> getCurrentWeather() {
+        return ResponseEntity.ok(weatherService.getWeatherData());
     }
 
 }
