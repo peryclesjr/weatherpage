@@ -1,6 +1,5 @@
 package com.weather.challenge.weather.weather.model.details;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -9,30 +8,24 @@ import java.util.List;
 
 @Data
 @RequiredArgsConstructor
-public class DailyWeather {
+public class HourlyWeather {
     private long dt;
-    private long sunrise;
-    private long sunset;
-    private long moonrise;
-    private long moonset;
-    @JsonProperty("moon_phase")
-    private double moonPhase;
-    private Temperature temp;
+    private double temp;
     @JsonProperty("feels_like")
-    private FeelsLike feelsLike;
+    private double feelsLike;
     private int pressure;
     private int humidity;
     @JsonProperty("dew_point")
     private double dewPoint;
     private double uvi;
     private int clouds;
-    private double pop;
-    private double rain;
-    private List<Weather> weather;
+    private int visibility;
     @JsonProperty("wind_speed")
     private double windSpeed;
     @JsonProperty("wind_deg")
-    private double windDeg;
+    private int windDeg;
+    private List<Weather> weather;
+    private double pop;
     @JsonProperty("wind_gust")
     private double windGust;
 }

@@ -1,14 +1,14 @@
 package com.weather.challenge.weather.weather.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.weather.challenge.weather.weather.model.details.CurrentWeather;
+import com.weather.challenge.weather.weather.model.details.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Data
 @RequiredArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class WeatherResponse {
 
     private double lat;
@@ -17,10 +17,8 @@ public class WeatherResponse {
     @JsonProperty("timezone_offset")
     private int timezoneOffset;
     private CurrentWeather current;
-//    private List<MinutelyWeather> minutely;
-//    private List<HourlyWeather> hourly;
-//    private List<DailyWeather> daily;
-//    private List<WeatherAlert> alerts;
-
-
+    private List<MinutelyWeather> minutely;
+    private List<HourlyWeather> hourly;
+    private List<DailyWeather> daily;
+    private List<WeatherAlert> alerts;
 }
