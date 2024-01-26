@@ -72,9 +72,9 @@ class WeatherServiceTest {
         actualResponse.setTimezone("America/New_York");
 
 
-        doReturn(Optional.of(actualResponse)).when(weatherService).getWeatherFiveDays();
+        doReturn(Optional.of(actualResponse)).when(weatherService).getWeatherFiveDays(any(),any(),any());
 
-        Optional<WeatherResponseDto> weatherResponse = weatherService.getWeatherFiveDays();
+        Optional<WeatherResponseDto> weatherResponse = weatherService.getWeatherFiveDays(any(),any(),any());
 
         assertEquals(expected, weatherResponse.get());
     }

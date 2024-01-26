@@ -47,12 +47,12 @@ public class WeatherService {
 
 
 
-    public Optional<WeatherResponseDto> getWeatherFiveDays()  {
+    public Optional<WeatherResponseDto> getWeatherFiveDays(String lat, String lon, String units)  {
         ApiConnectionWeather apiConnection = new ApiConnectionWeather();
-        StringBuilder responseContent = new StringBuilder();
+        StringBuilder  responseContent;
 
         try {
-            String urlString = apiConnection.buildWeatherApiUrl(urlForecastFiveDays, apiKey, latitude, longitude,"metric", Instant.now());
+            String urlString = apiConnection.buildWeatherApiUrl(urlForecastFiveDays, apiKey, lat, lon,units, Instant.now());
             Optional<StringBuilder> response = apiConnection.connectionApiWheather(urlString);
             if (response.isPresent()) {
                 responseContent = response.get();

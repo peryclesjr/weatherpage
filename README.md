@@ -65,3 +65,8 @@
 ### How to use the API
     After run your project, you can use the following URL in your browser:
          http://localhost:8080/weather/coldest-day-next-5-days
+
+### Next Steps
+    Create an interface using a good UI/UX get the weather from other cities. Could be a web page or a mobile app.
+    Create a cache to improve the performance of the API.
+    Create a database to store the information of the cities.
