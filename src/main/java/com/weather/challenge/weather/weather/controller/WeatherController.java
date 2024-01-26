@@ -19,9 +19,8 @@ public class WeatherController {
 
     @GetMapping("/coldest-day-next-5-days")
     public ResponseEntity<WeatherResponseDto> getColdestDayNextFive(@RequestParam(value = "lat", defaultValue = "49.837012") String lat,
-                                                                    @RequestParam(value = "lon", defaultValue = "-97.170069")  String lon,
-                                                                    @RequestParam(value = "units", defaultValue = "metric") String units) {
-        Optional<WeatherResponseDto> optional = weatherService.getWeatherFiveDays(lat, lon, units);
+                                                                    @RequestParam(value = "lon", defaultValue = "-97.170069")  String lon) {
+        Optional<WeatherResponseDto> optional = weatherService.getWeatherFiveDays(lat, lon);
         if (optional.isPresent()) {
             return ResponseEntity.ok(optional.get());
         }

@@ -10,12 +10,15 @@
 ### API 
     The API is a REST API, and it's a GET method, the URL is:
         http://localhost:8080/weather/coldest-day-next-5-days
-    The API has two parameters: 
+    
     The API return a JSON with the following structure:
         {
         "lat": 49.837,
         "lon": -97.1701,
         "timezone": "America/Winnipeg",
+        "date": "2024-01-27",
+        "minTempCelsius": -13.38,
+        "minTempFahrenheit": 7.916,
         "daily": {
             "dt": 1706378400,
             "sunrise": 1706364537,
@@ -23,17 +26,17 @@
             "moonrise": 1706404860,
             "moonset": 1706369220,
             "temp": {
-                "day": -5.77,
-                "min": -13.8,
-                "max": -4.3,
-                "night": -9.74,
-                "eve": -10.6,
-                "morn": -13.01
+                "day": -5.29,
+                "min": -13.38,
+                "max": -3.82,
+                "night": -9.69,
+                "eve": -9.81,
+                "morn": -12.8
             },
-            "pressure": 1025,
-            "humidity": 93,
+            "pressure": 1024,
+            "humidity": 92,
             "uvi": 1.15,
-            "clouds": 38,
+            "clouds": 32,
             "pop": 0,
             "rain": 0,
             "weather": [
@@ -46,17 +49,18 @@
             ],
             "moon_phase": 0.56,
             "feels_like": {
-                "day": -5.77,
-                "night": -14.68,
-                "eve": -10.6,
-                "morn": -16.52
+                "day": -5.29,
+                "night": -13.83,
+                "eve": -9.81,
+                "morn": -12.8
             },
-            "dew_point": -6.95,
-            "wind_speed": 2.59,
-            "wind_deg": 174,
-            "wind_gust": 4.74
+            "dew_point": -6.63,
+            "wind_speed": 2.38,
+            "wind_deg": 248,
+            "wind_gust": 4.06
         }
     }
+
     The API return the following HTTP status code:
         200: OK
         404: Not Found
@@ -65,6 +69,14 @@
 ### How to use the API
     After run your project, you can use the following URL in your browser:
          http://localhost:8080/weather/coldest-day-next-5-days
+    You can use the following parameters:
+        lon: longitude of the city
+        lat: latitude of the city
+    Example:    
+        http://localhost:8080/weather/coldest-day-next-5-days?lon=-97.1701&lat=49.837
+    It's optional, if no parameters are provided, the API will use the default values:
+        lon: -97.1701
+        lat: 49.837
 
 ### Next Steps
     Create an interface using a good UI/UX get the weather from other cities. Could be a web page or a mobile app.

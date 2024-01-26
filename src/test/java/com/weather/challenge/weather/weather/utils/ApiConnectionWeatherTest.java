@@ -38,24 +38,21 @@ class ApiConnectionWeatherTest {
         Instant instant = Instant.now();
 
         String expectedUrl = "http://api.weather.com?lat=40.7128&lon=74.0060&units=metric&exclude=minutely,hourly,alerts&dt="+instant.getEpochSecond()+"&appid=123456";
-        System.out.println(expectedUrl);
 
         //behavior of the method
-        doReturn(expectedUrl).when(apiConnection).buildWeatherApiUrl(any(), any(), any(), any(), any(), any());
+        doReturn(expectedUrl).when(apiConnection).buildWeatherApiUrl(any(), any(), any(), any(), any());
 
-
-        String actualUrl = apiConnection.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, "metric", instant);
-        System.out.println(actualUrl);
+        String actualUrl = apiConnection.buildWeatherApiUrl(baseUrl, apiKey, lat, lon,  instant);
 
         assertTrue(expectedUrl.equalsIgnoreCase(actualUrl));
     }
 
     @Test
     public void testConnectionApiWheather() {
-        Optional<StringBuilder> expected = Optional.of(new StringBuilder("test"));
+        Optional<String> expected = Optional.of("test");
 
         doReturn(expected).when(apiConnection).connectionApiWheather(any());
-        Optional<StringBuilder> actual = apiConnection.connectionApiWheather("http://api.weather.com");
+        Optional<String> actual = apiConnection.connectionApiWheather("http://api.weather.com");
 
         assertEquals(expected, actual);
     }

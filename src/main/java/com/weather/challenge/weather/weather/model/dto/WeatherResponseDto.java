@@ -16,6 +16,9 @@ public class WeatherResponseDto {
     private double lat;
     private double lon;
     private String timezone;
+    private LocalDate date;
+    private double minTempCelsius;
+    private double minTempFahrenheit;
     private Optional<DailyWeather> daily;
 
 

@@ -1,5 +1,6 @@
 package com.weather.challenge.weather.weather.utils;
 
+import com.weather.challenge.weather.weather.exception.WeatherServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class ApiConnectionWeather {
-    public Optional<StringBuilder> connectionApiWheather(String urlString) {
+    public Optional<String> connectionApiWheather(String urlString) {
         StringBuilder responseContent = new StringBuilder();
         String line;
 
@@ -31,29 +32,27 @@ public class ApiConnectionWeather {
                 responseContent.append(line);
             }
 
-            return Optional.of(responseContent);
+            return Optional.of(responseContent.toString());
 
-        }catch (IOException e) {
-            e.printStackTrace();
+        }catch (IOException io) {
+            throw new WeatherServiceException("Failed to get weather data", io);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            throw new WeatherServiceException("Unexpected error occurred", e);
         }
         finally {
             connection.disconnect();
 
         }
-        return Optional.empty();
     }
 
     public String buildWeatherApiUrl(String url,
                                      String apiKey,
                                      String lat,
                                      String lon,
-                                     String units,
                                      Instant instant) {
 
-        if (isNullOrEmpty(url) || isNullOrEmpty(apiKey) || isNullOrEmpty(lat) || isNullOrEmpty(lon) || isNullOrEmpty(units)) {
+        if (isNullOrEmpty(url) || isNullOrEmpty(apiKey) || isNullOrEmpty(lat) || isNullOrEmpty(lon) ) {
             return null;
         }
 
@@ -61,7 +60,7 @@ public class ApiConnectionWeather {
                 .fromUriString(url)
                 .queryParam("lat", lat)
                 .queryParam("lon", lon)
-                .queryParam("units", units)
+                .queryParam("units", "metric")
                 .queryParam("exclude", "minutely,hourly,alerts")
                 .queryParam("dt", instant.getEpochSecond())
                 .queryParam("appid", apiKey)

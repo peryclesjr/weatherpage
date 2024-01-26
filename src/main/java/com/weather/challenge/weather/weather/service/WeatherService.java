@@ -1,6 +1,7 @@
 package com.weather.challenge.weather.weather.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.weather.challenge.weather.weather.exception.WeatherServiceException;
 import com.weather.challenge.weather.weather.model.WeatherResponse;
 import com.weather.challenge.weather.weather.model.details.DailyWeather;
 import com.weather.challenge.weather.weather.model.dto.WeatherResponseDto;
@@ -47,13 +48,13 @@ public class WeatherService {
 
 
 
-    public Optional<WeatherResponseDto> getWeatherFiveDays(String lat, String lon, String units)  {
+    public Optional<WeatherResponseDto> getWeatherFiveDays(String lat, String lon)  {
         ApiConnectionWeather apiConnection = new ApiConnectionWeather();
-        StringBuilder  responseContent;
+        String responseContent;
 
         try {
-            String urlString = apiConnection.buildWeatherApiUrl(urlForecastFiveDays, apiKey, lat, lon,units, Instant.now());
-            Optional<StringBuilder> response = apiConnection.connectionApiWheather(urlString);
+            String urlString = apiConnection.buildWeatherApiUrl(urlForecastFiveDays, apiKey, lat, lon, Instant.now());
+            Optional<String> response = apiConnection.connectionApiWheather(urlString);
             if (response.isPresent()) {
                 responseContent = response.get();
                 WeatherResponse weatherResponse = toWeatherResponse(responseContent.toString());
@@ -61,9 +62,9 @@ public class WeatherService {
                 return Optional.of(WeatherResponseConverter.toDto(weatherResponse));
             }
         }catch(IOException io){
-            io.printStackTrace();
+            throw new WeatherServiceException("Failed to get weather data", io);
         }catch(Exception e){
-            e.printStackTrace();
+            throw new WeatherServiceException("Unexpected error occurred", e);
         }
         return Optional.empty();
 
@@ -73,8 +74,7 @@ public class WeatherService {
         return objectMapper.readValue(json, WeatherResponse.class);
     }
 
-    //Api returns 8 days, but we only need 5, today we remove the 0 day and the last  two days after
-    //it's simple to change the number of days, just change the parameters of the subList method
+    //Api returns 8 days, but we only need 5, we remove the 0 day(today) and the last two days from the list
     private List<DailyWeather> onlyFiveDays(List<DailyWeather> dailyWeatherList) {
         if (dailyWeatherList.size() < 6) {
             return dailyWeatherList;
