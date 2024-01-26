@@ -9,7 +9,7 @@
         mvn test    
 ### API 
     The API is a REST API, and it's a GET method, the URL is:
-        http://localhost:8080/weather/forecast5days
+        http://localhost:8080/weather/coldest-day-next-5-days
     The API has two parameters: 
     The API return a JSON with the following structure:
         {
@@ -64,4 +64,4 @@
 
 ### How to use the API
     After run your project, you can use the following URL in your browser:
-         http://localhost:8080/weather/forecast5days
+         http://localhost:8080/weather/coldest-day-next-5-days

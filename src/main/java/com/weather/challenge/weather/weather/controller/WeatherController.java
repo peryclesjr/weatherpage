@@ -17,10 +17,10 @@ public class WeatherController {
         this.weatherService = weatherService;
     }
 
-    @GetMapping("/forecast5days")
-    public ResponseEntity<WeatherResponseDto> getFiveDayForecast() {
+    @GetMapping("/coldest-day-next-5-days")
+    public ResponseEntity<WeatherResponseDto> getColdestDayNextFive() {
         Optional<WeatherResponseDto> optional = weatherService.getWeatherFiveDays();
-        if (    optional.isPresent()) {
+        if (optional.isPresent()) {
             return ResponseEntity.ok(optional.get());
         }
         return ResponseEntity.notFound().build();
