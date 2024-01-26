@@ -1,13 +1,10 @@
 package com.weather.challenge.weather.weather.utils;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+
 
 import java.time.Instant;
 import java.util.Optional;
@@ -15,6 +12,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+
+
 
 
 class ApiConnectionWeatherTest {
@@ -57,4 +56,17 @@ class ApiConnectionWeatherTest {
         assertEquals(expected, actual);
     }
 
+    //It's not the best test, but it's a good way start
+    @Test
+    public void given_NullOrEmptyDataForConnection_ThenBuildUrlFailure() {
+        String baseUrl = null;
+        String apiKey = "";
+        String lat = "40.7128";
+        String lon = "74.0060";
+
+        Instant instant = Instant.now();
+
+        String result = apiConnection.buildWeatherApiUrl(baseUrl, apiKey, lat, lon, instant);
+        assertTrue(result == null);
+    }
 }
